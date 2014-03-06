@@ -74,7 +74,7 @@ class Video extends DisplayObject {
 
 		if (ns != null) {
 
-			__graphics.__mediaSurface (ns.__videoElement);
+			__surface = ns.__videoElement;
 
 			ns.__videoElement.style.setProperty ("width", width + "px", "");
 			ns.__videoElement.style.setProperty ("height", height + "px", "");
