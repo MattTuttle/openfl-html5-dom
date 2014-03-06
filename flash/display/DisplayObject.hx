@@ -341,6 +341,18 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	private function __addToStage (newParent:DisplayObjectContainer, beforeSibling:DisplayObject = null):Void {
 
+		if (__maskingObj != null) return;
+
+		__surface.style.setProperty ("position", "absolute", "");
+		__surface.style.setProperty ("left", "0px", "");
+		__surface.style.setProperty ("top", "0px", "");
+
+		__surface.style.setProperty ("transform-origin", "0 0", "");
+		__surface.style.setProperty ("-moz-transform-origin", "0 0", "");
+		__surface.style.setProperty ("-webkit-transform-origin", "0 0", "");
+		__surface.style.setProperty ("-o-transform-origin", "0 0", "");
+		__surface.style.setProperty ("-ms-transform-origin", "0 0", "");
+
 		// only stage is allowed to add to a parent with no context
 		if (newParent.name == Stage.NAME) {
 
@@ -360,24 +372,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 			}
 
 			var gfx = __getGraphics ();
-
-			if (gfx != null) {
-
-				var surface = gfx.__surface;
-				surface.style.setProperty ("position", "absolute", "");
-				surface.style.setProperty ("left", "0px", "");
-				surface.style.setProperty ("top", "0px", "");
-
-				surface.style.setProperty ("transform-origin", "0 0", "");
-				surface.style.setProperty ("-moz-transform-origin", "0 0", "");
-				surface.style.setProperty ("-webkit-transform-origin", "0 0", "");
-				surface.style.setProperty ("-o-transform-origin", "0 0", "");
-				surface.style.setProperty ("-ms-transform-origin", "0 0", "");
-
-				__surface.appendChild(surface);
-				Lib.__setSurfaceTransform (surface, getSurfaceTransform(gfx));
-
-			}
+			if (gfx != null) __insertGraphics (gfx);
 
 		}
 
@@ -692,6 +687,26 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	}
 
+	private function __insertGraphics (gfx:Graphics):Void {
+
+		var surface = gfx.__surface;
+
+		if (surface.parentNode == null && surface.width > 0 && surface.height > 0) {
+
+			if (__surface.firstChild == null) {
+
+				__surface.appendChild (surface);
+
+			} else {
+
+				__surface.insertBefore (surface, __surface.firstChild);
+
+			}
+
+		}
+
+	}
+
 
 	private function __render (inMask:CanvasElement = null, clipRect:Rectangle = null) {
 
@@ -727,6 +742,8 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 		}
 
+		__insertGraphics (gfx);
+
 		var fullAlpha:Float = (parent != null ? parent.__combinedAlpha : 1) * alpha;
 
 		if (inMask != null) {
@@ -739,7 +756,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 			if (__testFlag (TRANSFORM_INVALID)) {
 
 				var m = getSurfaceTransform (gfx);
-				Lib.__setSurfaceTransform (gfx.__surface, m);
+				Lib.__setSurfaceTransform (__surface, m);
 				__clearFlag (TRANSFORM_INVALID);
 
 
@@ -1031,6 +1048,10 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 		}
 
 		__mask = inValue;
+
+		__surface.style.setProperty("overflow", "hidden", "");
+		__surface.style.setProperty("width", __mask.width + "px", "");
+		__surface.style.setProperty("height", __mask.height + "px", "");
 
 		if (__mask != null) {
 
