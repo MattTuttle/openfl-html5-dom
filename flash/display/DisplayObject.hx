@@ -341,25 +341,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	private function __addToStage (newParent:DisplayObjectContainer, beforeSibling:DisplayObject = null):Void {
 
-		var gfx = __getGraphics ();
-
-		if (gfx != null) {
-
-			var surf = gfx.__surface;
-			surf.style.setProperty ("position", "absolute", "");
-			surf.style.setProperty ("left", "0px", "");
-			surf.style.setProperty ("top", "0px", "");
-
-			surf.style.setProperty ("transform-origin", "0 0", "");
-			surf.style.setProperty ("-moz-transform-origin", "0 0", "");
-			surf.style.setProperty ("-webkit-transform-origin", "0 0", "");
-			surf.style.setProperty ("-o-transform-origin", "0 0", "");
-			surf.style.setProperty ("-ms-transform-origin", "0 0", "");
-
-			__surface.appendChild(surf);
-
-		}
-
 		// only stage is allowed to add to a parent with no context
 		if (newParent.name == Stage.NAME) {
 
@@ -370,19 +351,31 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 			if (beforeSibling != null) {
 
 				beforeSibling.__surface.parentNode.insertBefore(__surface, beforeSibling.__surface);
+				trace(beforeSibling.__surface);
 
 			} else {
 
 				newParent.__surface.appendChild(__surface);
-				trace("adding new");
-				trace(newParent.__surface);
-				trace(__surface);
 
 			}
 
+			var gfx = __getGraphics ();
+
 			if (gfx != null) {
 
-				Lib.__setSurfaceTransform (gfx.__surface, getSurfaceTransform(gfx));
+				var surface = gfx.__surface;
+				surface.style.setProperty ("position", "absolute", "");
+				surface.style.setProperty ("left", "0px", "");
+				surface.style.setProperty ("top", "0px", "");
+
+				surface.style.setProperty ("transform-origin", "0 0", "");
+				surface.style.setProperty ("-moz-transform-origin", "0 0", "");
+				surface.style.setProperty ("-webkit-transform-origin", "0 0", "");
+				surface.style.setProperty ("-o-transform-origin", "0 0", "");
+				surface.style.setProperty ("-ms-transform-origin", "0 0", "");
+
+				__surface.appendChild(surface);
+				Lib.__setSurfaceTransform (surface, getSurfaceTransform(gfx));
 
 			}
 
@@ -841,30 +834,23 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	private function __unifyChildrenWithDOM (lastMoveObj:DisplayObject = null) {
 
-		// if (lastMoveObj != null && this != lastMoveObj) {
+		if (lastMoveObj != null && this != lastMoveObj) {
 
-		// 	Lib.__setSurfaceZIndexAfter (
-		// 		(this.__scrollRect == null ? __surface : this._srWindow),
-		// 		(
-		// 			lastMoveObj.__scrollRect == null
-		// 				? lastMoveObj.__surface
-		// 				: (
-		// 					lastMoveObj == this.parent
-		// 						? lastMoveObj.__surface
-		// 						: lastMoveObj._srWindow
-		// 				)
-		// 		)
-		// 	);
-		// }
+			Lib.__setSurfaceZIndexAfter (
+				(this.__scrollRect == null ? __surface : this._srWindow),
+				((lastMoveObj.__scrollRect == null || lastMoveObj == this.parent) ? lastMoveObj.__surface : lastMoveObj._srWindow)
+			);
 
-		// if (gfx == null) {
+		}
 
-		// 	return lastMoveObj;
+		if (lastMoveObj == null) {
 
-		// } else {
+			return lastMoveObj;
+
+		} else {
 
 			return this;
-		// }
+		}
 
 	}
 

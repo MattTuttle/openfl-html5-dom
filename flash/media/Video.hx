@@ -28,8 +28,6 @@ class Video extends DisplayObject {
 	private var videoElement(default, null):MediaElement;
 	private var windowHack:Bool;
 
-	private var __graphics:Graphics;
-
 
 	public function new (width:Int = 320, height:Int = 240):Void {
 
@@ -39,9 +37,6 @@ class Video extends DisplayObject {
 		 * todo: netstream/camera
 		 * 			check compat with flash events
 		 */
-
-		__graphics = new Graphics ();
-		__graphics.drawRect (0, 0, width, height);
 
 		this.width = width;
 		this.height = height;
@@ -74,31 +69,57 @@ class Video extends DisplayObject {
 
 		if (ns != null) {
 
-			__surface = ns.__videoElement;
+			var video = ns.__videoElement;
+			trace(__surface);
 
-			ns.__videoElement.style.setProperty ("width", width + "px", "");
-			ns.__videoElement.style.setProperty ("height", height + "px", "");
-			ns.__videoElement.addEventListener ("error", ns.__notFound, false);
-			ns.__videoElement.addEventListener ("waiting", ns.__bufferEmpty, false);
-			ns.__videoElement.addEventListener ("ended", ns.__bufferStop, false);
-			ns.__videoElement.addEventListener ("play", ns.__bufferStart, false);
-			ns.__videoElement.play ();
+			video.style.setProperty ("width", width + "px", "");
+			video.style.setProperty ("height", height + "px", "");
+
+			video.style.setProperty ("position", "absolute", "");
+			video.style.setProperty ("left", "0px", "");
+			video.style.setProperty ("top", "0px", "");
+
+			video.addEventListener ("error", ns.__notFound, false);
+			video.addEventListener ("waiting", ns.__bufferEmpty, false);
+			video.addEventListener ("ended", ns.__bufferStop, false);
+			video.addEventListener ("play", ns.__bufferStart, false);
+
+			__surface.appendChild(video);
+
+			video.play ();
 
 		}
+
+	}
+
+	override public function set_width (inValue):Float {
+
+		return __width = inValue;
+
+	}
+
+	override public function get_width ():Float {
+
+		return __width;
+
+	}
+
+	override public function set_height (inValue):Float {
+
+		return __height = inValue;
+
+	}
+
+	override public function get_height ():Float {
+
+		return __height;
 
 	}
 
 
 	public function clear():Void {
 
-		if (__graphics != null) {
-
-			Lib.__removeSurface (__graphics.__surface);
-
-		}
-
-		__graphics = new Graphics ();
-		__graphics.drawRect (0, 0, width, height);
+		__surface.removeChild(netStream.__videoElement);
 
 	}
 
