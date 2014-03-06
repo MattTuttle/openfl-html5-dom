@@ -369,12 +369,14 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 			if (beforeSibling != null) {
 
-				Lib.__appendSurface (__surface, beforeSibling.__surface);
-				// beforeSibling.__surface.parentNode.insertBefore(__surface, beforeSibling.__surface);
+				beforeSibling.__surface.parentNode.insertBefore(__surface, beforeSibling.__surface);
 
 			} else {
 
 				newParent.__surface.appendChild(__surface);
+				trace("adding new");
+				trace(newParent.__surface);
+				trace(__surface);
 
 			}
 
@@ -839,24 +841,21 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	private function __unifyChildrenWithDOM (lastMoveObj:DisplayObject = null) {
 
-		if (lastMoveObj != null && this != lastMoveObj) {
+		// if (lastMoveObj != null && this != lastMoveObj) {
 
-			if (lastMoveObj != null) {
-				Lib.__setSurfaceZIndexAfter (
-					(this.__scrollRect == null ? __surface : this._srWindow),
-					(
-						lastMoveObj.__scrollRect == null
-							? lastMoveObj.__surface
-							: (
-								lastMoveObj == this.parent
-									? lastMoveObj.__surface
-									: lastMoveObj._srWindow
-							)
-					)
-				);
-			}
-
-		}
+		// 	Lib.__setSurfaceZIndexAfter (
+		// 		(this.__scrollRect == null ? __surface : this._srWindow),
+		// 		(
+		// 			lastMoveObj.__scrollRect == null
+		// 				? lastMoveObj.__surface
+		// 				: (
+		// 					lastMoveObj == this.parent
+		// 						? lastMoveObj.__surface
+		// 						: lastMoveObj._srWindow
+		// 				)
+		// 		)
+		// 	);
+		// }
 
 		// if (gfx == null) {
 
