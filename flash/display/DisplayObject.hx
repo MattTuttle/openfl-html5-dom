@@ -79,8 +79,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private var __y:Float;
 	private var __surface:Element;
 	private var _boundsInvalid (get__boundsInvalid, never):Bool;
-	private var _fullScaleX:Float;
-	private var _fullScaleY:Float;
 	private var _matrixChainInvalid (get__matrixChainInvalid, never):Bool;
 	private var _matrixInvalid (get__matrixInvalid, never):Bool;
 	private var ___id:String;
@@ -193,17 +191,8 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private inline function getSurfaceTransform (gfx:Graphics):Matrix {
 
 		var extent = gfx.__extentWithFilters;
-		var fm = __getFullMatrix ();
-
-		/*
-		var tx = fm.tx;
-		var ty = fm.ty;
-		var nm = new Matrix();
-		nm.scale(1/_fullScaleX, 1/_fullScaleY);
-		fm = fm.mult(nm);
-		fm.tx = tx;
-		fm.ty = ty;
-		*/
+		// var fm = __getFullMatrix ();
+		var fm = __getMatrix ();
 
 		fm.__translateTransformed (extent.topLeft);
 		return fm;
@@ -344,14 +333,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 		if (__maskingObj != null) return;
 
 		__surface.style.setProperty ("position", "absolute", "");
-		__surface.style.setProperty ("left", "0px", "");
-		__surface.style.setProperty ("top", "0px", "");
-
-		__surface.style.setProperty ("transform-origin", "0 0", "");
-		__surface.style.setProperty ("-moz-transform-origin", "0 0", "");
-		__surface.style.setProperty ("-webkit-transform-origin", "0 0", "");
-		__surface.style.setProperty ("-o-transform-origin", "0 0", "");
-		__surface.style.setProperty ("-ms-transform-origin", "0 0", "");
 
 		// only stage is allowed to add to a parent with no context
 		if (newParent.name == Stage.NAME) {
@@ -363,7 +344,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 			if (beforeSibling != null) {
 
 				beforeSibling.__surface.parentNode.insertBefore(__surface, beforeSibling.__surface);
-				trace(beforeSibling.__surface);
 
 			} else {
 
@@ -502,7 +482,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	}
 
 
-	public inline function __getFullMatrix (localMatrix:Matrix = null):Matrix {
+	public inline function __getFullMatrix (?localMatrix:Matrix):Matrix {
 
 		return transform.__getFullMatrix (localMatrix);
 
@@ -690,6 +670,8 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private function __insertGraphics (gfx:Graphics):Void {
 
 		var surface = gfx.__surface;
+
+		surface.style.setProperty("position", "absolute", "");
 
 		if (surface.parentNode == null && surface.width > 0 && surface.height > 0) {
 
@@ -902,18 +884,16 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 				m.translate (__x, __y); // set translation
 				__setMatrix (m);
+				__setFlag (TRANSFORM_INVALID);
 
 			}
 
-			var cm = __getFullMatrix ();
-			var fm = (parent == null ? m : parent.__getFullMatrix (m));
-
-			_fullScaleX = fm._sx;
-			_fullScaleY = fm._sy;
+			var cm = __getMatrix ();
+			var fm = (parent == null ? m : m.mult(parent.transform.matrix));
 
 			if (cm.a != fm.a || cm.b != fm.b || cm.c != fm.c || cm.d != fm.d || cm.tx != fm.tx || cm.ty != fm.ty) {
 
-				__setFullMatrix (fm);
+				__setFullMatrix(fm);
 				__setFlag (TRANSFORM_INVALID);
 
 			}
@@ -1049,7 +1029,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 		__mask = inValue;
 
-		__surface.style.setProperty("overflow", "hidden", "");
+		__surface.style.setProperty("overflow", "auto", "");
 		__surface.style.setProperty("width", __mask.width + "px", "");
 		__surface.style.setProperty("height", __mask.height + "px", "");
 

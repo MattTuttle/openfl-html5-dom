@@ -63,16 +63,6 @@ class Bitmap extends DisplayObject {
 	}
 
 
-	private inline function getBitmapSurfaceTransform (gfx:Graphics):Matrix {
-
-		var extent = gfx.__extentWithFilters;
-		var fm = __getFullMatrix ();
-		fm.__translateTransformed (extent.topLeft);
-		return fm;
-
-	}
-
-
 	override public function toString ():String {
 
 		return "[Bitmap name=" + this.name + " id=" + ___id + "]";
@@ -184,14 +174,14 @@ class Bitmap extends DisplayObject {
 		if (inMask != null) {
 
 			__applyFilters (__graphics.__surface);
-			var m = getBitmapSurfaceTransform (__graphics);
+			var m = getSurfaceTransform (__graphics);
 			Lib.__drawToSurface (__graphics.__surface, inMask, m, (parent != null ? parent.__combinedAlpha : 1) * alpha, clipRect, smoothing);
 
 		} else {
 
 			if (__testFlag (DisplayObject.TRANSFORM_INVALID)) {
 
-				var m = getBitmapSurfaceTransform (__graphics);
+				var m = getSurfaceTransform (__graphics);
 				Lib.__setSurfaceTransform (__surface, m);
 				__clearFlag (DisplayObject.TRANSFORM_INVALID);
 

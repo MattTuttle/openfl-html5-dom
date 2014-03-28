@@ -811,18 +811,15 @@ class Lib {
 
 		if (matrix.a == 1 && matrix.b == 0 && matrix.c == 0 && matrix.d == 1 && surface.getAttribute ("data-openfl-anim") == null) {
 
-			surface.style.left = matrix.tx + "px";
-			surface.style.top = matrix.ty + "px";
-			surface.style.setProperty ("transform", "", "");
-			surface.style.setProperty ("-moz-transform", "", "");
-			surface.style.setProperty ("-webkit-transform", "", "");
-			surface.style.setProperty ("-o-transform", "", "");
-			surface.style.setProperty ("-ms-transform", "", "");
+			var translate = "translate(" + matrix.tx + "px, " + matrix.ty + "px)";
+			surface.style.setProperty ("transform", translate, "");
+			surface.style.setProperty ("-moz-transform", translate, "");
+			surface.style.setProperty ("-webkit-transform", translate, "");
+			surface.style.setProperty ("-o-transform", translate, "");
+			surface.style.setProperty ("-ms-transform", translate, "");
 
 		} else {
 
-			surface.style.left = "0px";
-			surface.style.top = "0px";
 			surface.style.setProperty ("transform", matrix.toString(), "");
 			surface.style.setProperty ("-moz-transform", matrix.toMozString(), "");
 
