@@ -475,6 +475,7 @@ class DisplayObjectContainer extends InteractiveObject {
 				if (child.__maskingObj == null) {
 
 					result = child.__getObjectUnderPoint (point);
+
 					if (result != null) {
 
 						return mouseChildren ? result : this;
