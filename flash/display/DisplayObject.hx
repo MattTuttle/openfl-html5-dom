@@ -204,6 +204,20 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	}
 
 
+	private function get_mouseX ():Float {
+
+		return globalToLocal (new Point (stage.mouseX, 0)).x;
+
+	}
+
+
+	private function get_mouseY ():Float {
+
+		return globalToLocal (new Point (0, stage.mouseY)).y;
+
+	}
+
+
 	private inline function handleGraphicsUpdated (gfx:Graphics):Void {
 
 		__invalidateBounds ();
@@ -687,25 +701,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 		if (_matrixInvalid || _matrixChainInvalid) __validateMatrix();
 
-		/*
-		var clip0:Point = null;
-		var clip1:Point = null;
-		var clip2:Point = null;
-		var clip3:Point = null;
-		if (clipRect != null) {
-			var topLeft = clipRect.topLeft;
-			var topRight = clipRect.topLeft.clone();
-			topRight.x += clipRect.width;
-			var bottomRight = clipRect.bottomRight;
-			var bottomLeft = clipRect.bottomRight.clone();
-			bottomLeft.x -= clipRect.width;
-			clip0 = this.globalToLocal(this.parent.localToGlobal(topLeft));
-			clip1 = this.globalToLocal(this.parent.localToGlobal(topRight));
-			clip2 = this.globalToLocal(this.parent.localToGlobal(bottomRight));
-			clip3 = this.globalToLocal(this.parent.localToGlobal(bottomLeft));
-		}
-		*/
-
 		if (gfx.__render (inMask, __filters, 1, 1)) {
 
 			handleGraphicsUpdated (gfx);
@@ -736,22 +731,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 			Lib.__setSurfaceOpacity (__surface, fullAlpha);
 
-			/*if (clipRect != null) {
-				var rect = new Rectangle();
-				rect.topLeft = this.globalToLocal(this.parent.localToGlobal(clipRect.topLeft));
-				rect.bottomRight = this.globalToLocal(this.parent.localToGlobal(clipRect.bottomRight));
-				Lib.__setSurfaceClipping(gfx.__surface, rect);
-			}*/
-
 		}
-
-		// this.__updateParentNode();
-		// if (this.__scrollRect == null) {
-		// 	var pgfx = this.parent.__getGraphics();
-		// 	if (pgfx != null && pgfx.__surface.parentNode != gfx.__surface.parentNode) {
-		// 		pgfx.__surface.parentNode.appendChild(gfx.__surface);
-		// 	}
-		// }
 
 	}
 
@@ -872,12 +852,11 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 				m.translate (__x, __y); // set translation
 				__setMatrix (m);
-				__setFlag (TRANSFORM_INVALID);
 
 			}
 
-			var cm = __getMatrix ();
-			var fm = (parent == null ? m : m.mult(parent.transform.matrix));
+			var cm = __getFullMatrix ();
+			var fm = (parent == null ? m : parent.__getFullMatrix (m));
 
 			if (cm.a != fm.a || cm.b != fm.b || cm.c != fm.c || cm.d != fm.d || cm.tx != fm.tx || cm.ty != fm.ty) {
 
@@ -1042,20 +1021,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private inline function get__matrixInvalid():Bool {
 
 		return __testFlag (MATRIX_INVALID);
-
-	}
-
-
-	private function get_mouseX ():Float {
-
-		return globalToLocal (new Point (stage.mouseX, 0)).x;
-
-	}
-
-
-	private function get_mouseY ():Float {
-
-		return globalToLocal (new Point (0, stage.mouseY)).y;
 
 	}
 
