@@ -454,6 +454,14 @@ class DisplayObjectContainer extends InteractiveObject {
 
 		if (!visible) return null;
 
+		// check that point is contained within a mask
+		if (mask != null) {
+
+			var local = globalToLocal (point);
+			if (local.x <= 0 || local.y <= 0 || local.x * scaleX > width || local.y * scaleY > height) return null;
+
+		}
+
 		var l = __children.length - 1;
 
 		for (i in 0...__children.length) {
@@ -462,13 +470,18 @@ class DisplayObjectContainer extends InteractiveObject {
 
 			if (mouseEnabled) {
 
-				result = __children[l - i].__getObjectUnderPoint (point);
+				var child = __children[l - i];
 
-			}
+				if (child.__maskingObj == null) {
 
-			if (result != null) {
+					result = child.__getObjectUnderPoint (point);
+					if (result != null) {
 
-				return mouseChildren ? result : this;
+						return mouseChildren ? result : this;
+
+					}
+
+				}
 
 			}
 

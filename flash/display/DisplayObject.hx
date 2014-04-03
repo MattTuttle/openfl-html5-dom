@@ -332,6 +332,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 	private function __addToStage (newParent:DisplayObjectContainer, beforeSibling:DisplayObject = null):Void {
 
+		// don't add masks to the stage
 		if (__maskingObj != null) return;
 
 		__surface.style.setProperty ("position", "absolute", "");
@@ -996,7 +997,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 		__mask = inValue;
 
-		__surface.style.setProperty("overflow", "auto", "");
+		__surface.style.setProperty("overflow", "hidden", "");
 		__surface.style.setProperty("width", __mask.width + "px", "");
 		__surface.style.setProperty("height", __mask.height + "px", "");
 
