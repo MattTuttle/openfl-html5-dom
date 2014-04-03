@@ -156,18 +156,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 		if (_matrixInvalid || _matrixChainInvalid) __validateMatrix ();
 		if (_boundsInvalid) validateBounds ();
 
-		var m = __getFullMatrix ();
-
-		// perhaps inverse should be stored and updated lazily?
-		if (targetCoordinateSpace != null) {
-
-			// will be null when target space is stage and this is not on stage
-			m.concat(targetCoordinateSpace.__getFullMatrix ().invert ());
-
-		}
-
-		var rect = __boundsRect.transform (m);	// transform does cloning
-		return rect;
+		return __boundsRect;
 
 	}
 
@@ -191,11 +180,18 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 	private inline function getSurfaceTransform (gfx:Graphics):Matrix {
 
 		var extent = gfx.__extentWithFilters;
-		// var fm = __getFullMatrix ();
-		var fm = __getMatrix ();
+		var m = __getMatrix ();
 
-		fm.__translateTransformed (extent.topLeft);
-		return fm;
+		m.__translateTransformed (extent.topLeft);
+		return m;
+
+	}
+
+
+	public function localToGlobal (inPos:Point):Point {
+
+		if (_matrixInvalid || _matrixChainInvalid) __validateMatrix ();
+		return __getFullMatrix ().transformPoint (inPos);
 
 	}
 
@@ -274,14 +270,6 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 		var gfx = __getGraphics ();
 		if (gfx != null) gfx.__invalidate ();
-
-	}
-
-
-	public function localToGlobal (point:Point):Point {
-
-		if (_matrixInvalid || _matrixChainInvalid) __validateMatrix ();
-		return __getFullMatrix ().transformPoint (point);
 
 	}
 
