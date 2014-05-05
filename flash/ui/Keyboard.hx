@@ -2,7 +2,11 @@ package flash.ui;
 
 
 class Keyboard {
-	
+
+	// Currently unsupported...
+	public static var ALTERNATE : Int;
+	public static var COMMAND : Int;
+	public static var QUOTE : Int;
 	
 	public static inline var NUMBER_0 = 48;
 	public static inline var NUMBER_1 = 49;

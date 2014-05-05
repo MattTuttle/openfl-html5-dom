@@ -664,6 +664,7 @@ class DisplayObject extends EventDispatcher implements IBitmapDrawable {
 
 			Lib.__removeSurface (__surface);
 			var evt = new Event (Event.REMOVED_FROM_STAGE, false, false);
+			evt.target = this;
 			dispatchEvent (evt);
 
 		}

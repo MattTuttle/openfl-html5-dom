@@ -15,6 +15,7 @@ import flash.net.NetStream;
 import flash.Lib;
 import js.html.CanvasElement;
 import js.html.MediaElement;
+import js.Browser;
 
 
 class Video extends DisplayObject {
@@ -89,7 +90,6 @@ class Video extends DisplayObject {
 			video.play ();
 
 		}
-
 	}
 
 	override public function set_width (inValue):Float {
@@ -122,7 +122,6 @@ class Video extends DisplayObject {
 		__surface.removeChild(netStream.__videoElement);
 
 	}
-
 
 	override public function __getObjectUnderPoint (point:Point):InteractiveObject {
 
@@ -165,6 +164,5 @@ class Video extends DisplayObject {
 		return "[Video name=" + this.name + " id=" + ___id + "]";
 
 	}
-
 
 }

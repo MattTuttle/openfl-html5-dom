@@ -76,6 +76,7 @@ class Loader extends Sprite {
 		try {
 			
 			contentLoaderInfo.addEventListener (Event.COMPLETE, handleLoad, false, 2147483647);
+			contentLoaderInfo.addEventListener (IOErrorEvent.IO_ERROR, handleError, false, 2147483647);
 			mImage.__loadFromFile (request.url, contentLoaderInfo);
 			content = new Bitmap (mImage);
 			Reflect.setField (contentLoaderInfo, "content", this.content);
@@ -99,8 +100,32 @@ class Loader extends Sprite {
 		}
 		
 	}
-	
-	
+
+    public function unload() 
+    {
+        if (numChildren > 0) 
+        {
+            while(numChildren > 0) 
+            {
+                removeChildAt(0);
+            }
+
+            untyped
+            {
+                content = null;
+                contentLoaderInfo.url = null;
+                contentLoaderInfo.contentType = null;
+                contentLoaderInfo.content = null;
+                contentLoaderInfo.bytesLoaded = contentLoaderInfo.bytesTotal = 0;
+                contentLoaderInfo.width = 0;
+                contentLoaderInfo.height = 0;   
+            }
+            var event = new Event(Event.UNLOAD);
+            event.currentTarget = this;
+            dispatchEvent(event);
+        }
+    }
+
 	public function loadBytes (buffer:ByteArray):Void {
 		
 		try {
@@ -180,10 +205,21 @@ class Loader extends Sprite {
 	private function handleLoad (e:Event):Void {
 		
 		e.currentTarget = this;
-		content.__invalidateBounds ();
-		content.__render (null, null);
-		contentLoaderInfo.removeEventListener (Event.COMPLETE, handleLoad);
+                if (content != null) {
+			content.__invalidateBounds ();
+			content.__render (null, null);
+			contentLoaderInfo.removeEventListener (Event.COMPLETE, handleLoad);
+                }		
+	}
+
+	private function handleError (e:Event):Void {
 		
+		e.currentTarget = this;
+                if (content != null) {
+			content.__invalidateBounds ();
+			content.__render (null, null);
+			contentLoaderInfo.removeEventListener (IOErrorEvent.IO_ERROR, handleError);
+                }		
 	}
 	
 	

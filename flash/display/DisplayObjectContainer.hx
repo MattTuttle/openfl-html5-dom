@@ -512,10 +512,9 @@ class DisplayObjectContainer extends InteractiveObject {
 
 
 	override public function __invalidateMatrix (local:Bool = false):Void {
-
 		//** FINAL **//
 
-		if (!_matrixChainInvalid && !_matrixInvalid) {
+		if (!_matrixChainInvalid && !_matrixInvalid && __children != null) {
 
 			for (child in __children) {
 
