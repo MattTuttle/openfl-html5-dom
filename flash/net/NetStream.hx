@@ -316,12 +316,6 @@ class NetStream extends EventDispatcher {
 
 	}
 
-	public function pause() : Void {
-
-		__videoElement.pause();
-
-	}
-
     public function __unsupportedFormat(e) {
         __connection.dispatchEvent (new NetStatusEvent (NetStatusEvent.NET_STATUS, false, false, { code : CODE_PLAY_UNSUPPORTEDFORMAT } ));
 
