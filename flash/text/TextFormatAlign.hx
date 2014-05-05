@@ -1,8 +1,8 @@
 package flash.text;
 
 
-enum TextFormatAlign {
-	
+@:fakeEnum(String) enum TextFormatAlign {
+
 	LEFT;
 	RIGHT;
 	JUSTIFY;

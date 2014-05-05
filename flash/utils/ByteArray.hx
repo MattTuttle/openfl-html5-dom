@@ -43,6 +43,7 @@ class ByteArray implements ArrayAccess<Int> {
 	
 	public function clear () {
 		
+		position = 0;
 		length = 0;
 		
 	}

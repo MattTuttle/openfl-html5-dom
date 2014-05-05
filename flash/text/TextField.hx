@@ -24,8 +24,8 @@ class TextField extends InteractiveObject {
 	
 	public static var mDefaultFont = Font.DEFAULT_FONT_NAME;
 	
-	public var antiAliasType:String;
-	public var autoSize (default, set_autoSize):String;
+	public var antiAliasType:AntiAliasType;
+	public var autoSize (default, set_autoSize):TextFieldAutoSize;
 	public var background (default,set_background):Bool;
 	public var backgroundColor (default, set_backgroundColor):Int;
 	public var border (default, set_border):Bool;
@@ -235,7 +235,14 @@ class TextField extends InteractiveObject {
 	
 	private function Rebuild () {
 		
-		if (mHTMLMode) return;
+            if (mHTMLMode) {
+                mMaxWidth = __graphics.__surface.clientWidth;
+                //mMaxHeight = __graphics.__surface.clientHeight;
+                __graphics.__surface.style.setProperty(
+                    "white-space", (/*wordWrap ? "pre-wrap" :*/ "nowrap"),
+                    "");
+                return;
+            }
 		
 		mLineInfo = [];
 		__graphics.clear ();
@@ -544,7 +551,7 @@ class TextField extends InteractiveObject {
 	}
 	
 	
-	public function setTextFormat (inFmt:TextFormat, beginIndex:Int = 0, endIndex:Int = 0) {
+	public function setTextFormat (inFmt:TextFormat, beginIndex:Int = -1, endIndex:Int = -1) : Void {
 		
 		if (inFmt.font != null) {
 			
@@ -573,7 +580,7 @@ class TextField extends InteractiveObject {
 		RebuildText ();
 		__invalidateBounds ();
 		
-		return getTextFormat ();
+		return;
 		
 	}
 	
@@ -674,14 +681,14 @@ class TextField extends InteractiveObject {
 	
 	
 	
-	private function get_autoSize ():String {
+	private function get_autoSize ():TextFieldAutoSize {
 		
 		return autoSize;
 		
 	}
 	
 	
-	private function set_autoSize (inAutoSize:String):String {
+	private function set_autoSize (inAutoSize:TextFieldAutoSize):TextFieldAutoSize {
 		
 		autoSize = inAutoSize;
 		Rebuild ();
@@ -871,6 +878,20 @@ class TextField extends InteractiveObject {
 		__invalidateBounds ();
 		
 		return mHTMLText;
+		
+	}
+	
+	
+	public function getLineOffset (lineIndex:Int):Int {
+		
+		return 0;
+		
+	}
+	
+	
+	public function getLineText (lineIndex:Int):String {
+		
+		return "";
 		
 	}
 	

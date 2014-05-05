@@ -15,6 +15,7 @@ import flash.net.NetStream;
 import flash.Lib;
 import js.html.CanvasElement;
 import js.html.MediaElement;
+import js.Browser;
 
 
 class Video extends DisplayObject {
@@ -89,7 +90,6 @@ class Video extends DisplayObject {
 			video.play ();
 
 		}
-
 	}
 
 	override public function set_width (inValue):Float {
@@ -166,5 +166,35 @@ class Video extends DisplayObject {
 
 	}
 
+   override function validateBounds ():Void {
 
+        if (_boundsInvalid) {
+
+            super.validateBounds ();
+
+            if ((width == 0) && (height == 0)) {
+
+                var r = new Rectangle (0, 0, 320, 240);
+
+                if (r.width != 0 || r.height != 0) {
+
+                    if (__boundsRect.width == 0 && __boundsRect.height == 0) {
+
+                        __boundsRect = r.clone ();
+
+                    } else {
+
+                        __boundsRect.extendBounds (r);
+
+                    }
+
+                }
+
+            }
+
+            __setDimensions ();
+
+        }
+
+    }
 }
